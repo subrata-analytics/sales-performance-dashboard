@@ -20,10 +20,16 @@ CREATE TABLE IF NOT EXISTS staging_sales (
     estimated_profit     NUMERIC(14,2)
 );
 
+-- Create a cost factor table
+CREATE TABLE IF NOT EXISTS product_margin (
+    category TEXT PRIMARY KEY,
+    cost_factor NUMERIC(5,4) NOT NULL CHECK (cost_factor > 0 AND cost_factor < 1)
+);
+
 -- Import CSV data into staging table
 -- Give the postgres user read access to 
 -- the file before running this command 
--- Use absolute path of the CSV file if needed 
+-- Use absolute path of the CSV file if needed
 COPY staging_sales (
     sale_date,
     store,
@@ -37,4 +43,23 @@ COPY staging_sales (
 FROM '../data/retail_sales_50krows_cleaned.csv'
 WITH (FORMAT csv, HEADER true, DELIMITER ',', ENCODING 'UTF8');
 
-SELECT sale_date, quantity, unit_price FROM staging_sales;
+-- Insert default cost factors
+INSERT INTO product_margin (category, cost_factor) VALUES
+    ('Electronics', 0.62),
+    ('Accessories', 0.82),
+    ('Other', 0.70)
+ON CONFLICT (category) DO NOTHING;
+
+
+UPDATE staging_sales s
+SET estimated_cost = 
+		s.total_sales * m.cost_factor,
+	estimated_profit = 
+		s.total_sales * (1 - m.cost_factor)
+FROM product_margin m
+WHERE s.category = m.category;
+
+SELECT * FROM product_margin;
+SELECT sale_date, quantity, estimated_cost, estimated_profit FROM staging_sales;
+
+ROLLBACK;
