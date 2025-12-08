@@ -1,4 +1,4 @@
-date,store,region,product,category,unit_price,quantity,total_sales
+sale_date,store,region,product,category,unit_price,quantity,total_sales
 2023-04-13,Store A,South,Tablet,Electronics,300,2,600
 2024-03-11,Store D,East,Laptop,Electronics,900,10,9000
 2023-09-28,Store D,West,Headphones,Accessories,75,11,825
