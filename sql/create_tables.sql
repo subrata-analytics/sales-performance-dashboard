@@ -59,6 +59,12 @@ SET estimated_cost =
 FROM product_margin m
 WHERE s.category = m.category;
 
+-- More simpler way is to use a fixed cost factor
+-- Example: Assume cost = 65% of revenue
+-- UPDATE staging_sales
+-- SET estimated_cost   = total_sales * 0.65,
+--     estimated_profit = total_sales * (1 - * 0.65);
+
 SELECT * FROM product_margin;
 SELECT sale_date, quantity, estimated_cost, estimated_profit FROM staging_sales;
 
