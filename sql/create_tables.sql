@@ -161,6 +161,15 @@ SELECT DISTINCT
 FROM staging_sales
 ON CONFLICT (product_name, category) DO NOTHING;
 
+-- Populate dim_sales_metrics
+INSERT INTO dim_sales_metrics (unit_price, estimated_cost, estimated_profit)
+SELECT DISTINCT
+	unit_price,
+	estimated_cost,
+	estimated_profit
+FROM staging_sales
+ON CONFLICT DO NOTHING;
+
 -- Other queries
 SELECT * FROM product_margin;
 
@@ -175,5 +184,6 @@ FROM staging_sales;
 SELECT * FROM dim_date;
 SELECT * FROM dim_store;
 SELECT * FROM dim_product;
+SELECT * FROM dim_sales_metrics;
 
 ROLLBACK;
