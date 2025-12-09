@@ -112,6 +112,10 @@ SET
 	sale_quarter	= EXTRACT(QUARTER FROM sale_date)::INTEGER,
 	weekday 		= TO_CHAR(sale_date, 'Day'); -- e.g., 'Monday'
 
+-- Remove whitespaces from weekday
+UPDATE staging_sales
+SET weekday = TRIM(weekday);
+
 -- Insert default cost factors
 INSERT INTO product_margin (category, cost_factor) VALUES
     ('Electronics', 0.62),
@@ -128,6 +132,8 @@ SET estimated_cost =
 		s.total_sales * (1 - m.cost_factor)
 FROM product_margin m
 WHERE s.category = m.category;
+
+-- 
 
 SELECT * FROM product_margin;
 SELECT * FROM staging_sales;
