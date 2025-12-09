@@ -5,7 +5,6 @@ DROP TABLE IF EXISTS product_margin;
 DROP TABLE IF EXISTS dim_date;
 DROP TABLE IF EXISTS dim_store;
 DROP TABLE IF EXISTS dim_product;
-DROP TABLE IF EXISTS dim_sales_metrics;
 DROP TABLE IF EXISTS fact_sales;
 
 -- Create staging table safely
@@ -65,6 +64,21 @@ CREATE TABLE IF NOT EXISTS dim_sales_metrics (
 	estimated_profit	NUMERIC (14,2)
 );
 
+-- The fact table references all dimensions and stores 
+-- the transaction-level measures.
+-- fact_sales: It references all dimensions and transactions
+CREATE TABLE IF NOT EXISTS fact_sales (
+	sales_id			SERIAL PRIMARY KEY,
+
+	date_key			INTEGER REFERENCES dim_date(date_key),
+	store_key			INTEGER REFERENCES dim_store(store_key),
+	product_key			INTEGER REFERENCES dim_product(product_key),
+	metrics_key			INTEGER REFERENCES dim_sales_metrics(metrics_key),
+
+	quantity			INTEGER NOT NULL CHECK (quantity >= 0),
+	total_sales			NUMERIC(14,2), CHECK (total_sales >= 0)
+);
+
 
 -- Import CSV data into staging table
 -- Give the postgres user read access to 
@@ -101,3 +115,5 @@ WHERE s.category = m.category;
 
 SELECT * FROM product_margin;
 SELECT sale_date, quantity, estimated_cost, estimated_profit FROM staging_sales;
+
+ROLLBACK;
