@@ -153,11 +153,27 @@ SELECT DISTINCT
 FROM staging_sales
 ON CONFLICT (store_name, region) DO NOTHING;
 
+-- Populate dim_product
+INSERT INTO dim_product (product_name, category)
+SELECT DISTINCT
+	product,
+	category
+FROM staging_sales
+ON CONFLICT (product_name, category) DO NOTHING;
+
 -- Other queries
 SELECT * FROM product_margin;
+
 SELECT * FROM staging_sales;
-SELECT sale_date, quantity, estimated_cost, estimated_profit FROM staging_sales;
+SELECT 
+	sale_date, 
+	quantity, 
+	estimated_cost, 
+	estimated_profit 
+FROM staging_sales;
+
 SELECT * FROM dim_date;
 SELECT * FROM dim_store;
+SELECT * FROM dim_product;
 
 ROLLBACK;
