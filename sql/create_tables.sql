@@ -1,9 +1,11 @@
 -- Run each block of this script separately to avoid errors
 -- Drop tables safely
 DROP TABLE IF EXISTS staging_sales;
-DROP TABLE IF EXISTS dim_product;
-DROP TABLE IF EXISTS dim_store;
+DROP TABLE IF EXISTS product_margin;
 DROP TABLE IF EXISTS dim_date;
+DROP TABLE IF EXISTS dim_store;
+DROP TABLE IF EXISTS dim_product;
+DROP TABLE IF EXISTS dim_sales_metrics;
 DROP TABLE IF EXISTS fact_sales;
 
 -- Create staging table safely
@@ -25,6 +27,44 @@ CREATE TABLE IF NOT EXISTS product_margin (
     category TEXT PRIMARY KEY,
     cost_factor NUMERIC(5,4) NOT NULL CHECK (cost_factor > 0 AND cost_factor < 1)
 );
+
+-- Create dimension tables --
+-----------------------------
+-- dim_date: includes all the analytic attributes
+-- extracted from the dateset
+CREATE TABLE IF NOT EXISTS dim_date (
+	date_key			SERIAL PRIMARY KEY,
+	sale_date			DATE UNIQUE,
+	sale_year			INTEGER,
+	sale_month			INTEGER,
+	sale_quarter		INTEGER,
+	weekday				TEXT
+);
+
+-- dim_store: Normalized store and region table
+CREATE TABLE IF NOT EXISTS dim_store (
+    store_key       SERIAL PRIMARY KEY,
+    store_name      TEXT,
+    region          TEXT,
+    UNIQUE (store_name, region)
+);
+
+-- dim_product: Noramlized product information
+CREATE TABLE IF NOT EXISTS dim_product (
+	product_key		SERIAL PRIMARY KEY,
+	product_name 	TEXT,
+	category		TEXT,
+	UNIQUE (product_name, category)
+);
+
+-- dim_sales_metrics: Usable numeric attributes for modeling
+CREATE TABLE IF NOT EXISTS dim_sales_metrics (
+	metrics_key			SERIAL PRIMARY KEY,
+	unit_price			NUMERIC(12,2) CHECK (unit_price >= 0),
+	estimated_cost		NUMERIC (14,2),
+	estimated_profit	NUMERIC (14,2)
+);
+
 
 -- Import CSV data into staging table
 -- Give the postgres user read access to 
@@ -59,13 +99,5 @@ SET estimated_cost =
 FROM product_margin m
 WHERE s.category = m.category;
 
--- More simpler way is to use a fixed cost factor
--- Example: Assume cost = 65% of revenue
--- UPDATE staging_sales
--- SET estimated_cost   = total_sales * 0.65,
---     estimated_profit = total_sales * (1 - * 0.65);
-
 SELECT * FROM product_margin;
 SELECT sale_date, quantity, estimated_cost, estimated_profit FROM staging_sales;
-
-ROLLBACK;
