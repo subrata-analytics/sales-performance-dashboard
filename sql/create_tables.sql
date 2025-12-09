@@ -31,7 +31,8 @@ ADD COLUMN weekday			TEXT;
 -- Create a cost factor table
 CREATE TABLE IF NOT EXISTS product_margin (
     category TEXT PRIMARY KEY,
-    cost_factor NUMERIC(5,4) NOT NULL CHECK (cost_factor > 0 AND cost_factor < 1)
+    cost_factor NUMERIC(5,4) NOT NULL 
+        CHECK (cost_factor > 0 AND cost_factor < 1)
 );
 
 -- Create dimension tables --
@@ -170,6 +171,35 @@ SELECT DISTINCT
 FROM staging_sales
 ON CONFLICT DO NOTHING;
 
+-- Populate fact_sales
+INSERT INTO fact_sales (
+	date_key,
+	store_key,
+	product_key,
+	metrics_key,
+	quantity,
+	total_sales
+)
+SELECT 
+	d.date_key,
+	s.store_key,
+	p.product_key,
+	m.metrics_key,
+	st.quantity,
+	st.total_sales
+FROM staging_sales st
+JOIN dim_date d
+	ON st.sale_date = d.sale_date
+JOIN dim_store s
+	ON st.store = s.store_name AND st.region = s.region
+JOIN dim_product p
+	ON st.product = p.product_name AND st.category = p.category
+JOIN dim_sales_metrics m
+	ON st.unit_price = m.unit_price
+	AND st.estimated_cost = m.estimated_cost
+	AND st.estimated_profit = m.estimated_profit;
+
+
 -- Other queries
 SELECT * FROM product_margin;
 
@@ -185,5 +215,6 @@ SELECT * FROM dim_date;
 SELECT * FROM dim_store;
 SELECT * FROM dim_product;
 SELECT * FROM dim_sales_metrics;
+SELECT * FROM fact_sales;
 
 ROLLBACK;
