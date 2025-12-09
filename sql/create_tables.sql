@@ -133,8 +133,19 @@ SET estimated_cost =
 FROM product_margin m
 WHERE s.category = m.category;
 
--- 
+-- Populate Dimension Tables (Based on staging table)
+-- Populate dim_date
+INSERT INTO dim_date (sale_date, sale_year, sale_month, sale_quarter, weekday)
+SELECT DISTINCT
+	sale_date,
+	sale_year,
+	sale_month,
+	sale_quarter,
+	weekday
+FROM staging_sales
+ON CONFLICT (sale_date) DO NOTHING;
 
+-- Other queries
 SELECT * FROM product_margin;
 SELECT * FROM staging_sales;
 SELECT sale_date, quantity, estimated_cost, estimated_profit FROM staging_sales;
