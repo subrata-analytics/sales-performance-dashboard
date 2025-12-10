@@ -43,3 +43,6 @@ SET estimated_cost =
 		s.total_sales * (1 - m.cost_factor)
 FROM product_margin m
 WHERE s.category = m.category;
+
+
+SELECT * FROM staging_sales;
