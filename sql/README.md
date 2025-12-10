@@ -10,6 +10,9 @@ for the Sales Performance Dashboard project.
 - Defines schema and data types
 - Loads cleaned CSV data into database
 
+![erDiagram](./sql_erd_retail_sales.pgerd.png "ERD for staging and fact sales")
+
+
 ### 2. cleaning_queries.sql
 - Performs SQL-based data cleaning
 - Removes duplicates
