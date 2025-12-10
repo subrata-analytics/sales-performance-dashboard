@@ -34,3 +34,8 @@ SELECT DISTINCT
 	estimated_profit
 FROM staging_sales
 ON CONFLICT DO NOTHING;
+
+SELECT * FROM dim_date;
+SELECT * FROM dim_store;
+SELECT * FROM dim_product;
+SELECT * FROM dim_sales_metrics;
