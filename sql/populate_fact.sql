@@ -25,3 +25,6 @@ JOIN dim_sales_metrics m
 	ON st.unit_price = m.unit_price
 	AND st.estimated_cost = m.estimated_cost
 	AND st.estimated_profit = m.estimated_profit;
+
+
+SELECT * FROM fact_sales;
