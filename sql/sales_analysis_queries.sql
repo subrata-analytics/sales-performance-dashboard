@@ -32,8 +32,8 @@ SELECT
     SUM(fs.total_sales) AS monthly_sales
 FROM fact_sales fs
 JOIN dim_date dd ON fs.date_key = dd.date_key
-GROUP BY 1, 2
-ORDER BY 1, 2;
+GROUP BY 1, 2 -- GROUP BY dd.sale_year, dd.sale_month
+ORDER BY 1, 2; -- ORDER BY dd.sale_year, dd.sale_month;
 
 -- 2.2 Sales by Quarter
 SELECT
@@ -42,8 +42,8 @@ SELECT
     SUM(fs.total_sales) AS quaterly_sales
 FROM fact_sales fs
 JOIN dim_date dd ON fs.date_key = dd.date_key
-GROUP BY 1, 2
-ORDER BY 1, 2;
+GROUP BY 1, 2  -- GROUP BY dd.sale_year, dd.sale_quarter
+ORDER BY 1, 2; -- ORDER BY dd.sale_year, dd.sale_quarter;
 
 -- 2.3 Weekday Performance
 SELECT
@@ -61,8 +61,8 @@ SELECT
     SUM(fs.total_sales) AS revenue
 FROM fact_sales fs
 JOIN dim_date dd ON fs.date_key = dd.date_key
-GROUP BY 1, 2
-ORDER BY 1, 3 DESC;
+GROUP BY 1, 2 -- GROUP BY dd.sale_year, dd.weekday
+ORDER BY 1, 3 DESC; -- ORDER BY dd.sale_year, dd.weekday DESC;
 
 
 -- 3 Store & Region Analysis
@@ -82,8 +82,8 @@ SELECT
     SUM(fs.total_sales) AS store_sales
 FROM fact_sales fs
 JOIN dim_store ds ON fs.store_key = ds.store_key
-GROUP BY 1, 2
-ORDER BY store_sales DESC
+GROUP BY 1, 2 -- GROUP BY ds.store_name, ds.region
+ORDER BY store_sales
 LIMIT 10;
 
 
@@ -104,7 +104,7 @@ SELECT
     SUM(fs.total_sales) AS sales
 FROM fact_sales fs
 JOIN dim_product dp ON fs.product_key = dp.product_key
-GROUP BY 1, 2
+GROUP BY 1, 2 -- GROUP BY dp.product_name, dp.category
 ORDER BY sales DESC
 LIMIT 5;
 
@@ -116,6 +116,6 @@ SELECT
 FROM fact_sales fs
 JOIN dim_product dp ON fs.product_key = dp.product_key
 JOIN dim_sales_metrics dsm ON fs.metrics_key = dsm.metrics_key
-GROUP BY 1, 2
+GROUP BY 1, 2 -- GROUP BY dp.product_name, dp.category
 ORDER BY profit
 LIMIT 5;
