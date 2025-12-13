@@ -85,3 +85,37 @@ JOIN dim_store ds ON fs.store_key = ds.store_key
 GROUP BY 1, 2
 ORDER BY store_sales DESC
 LIMIT 10;
+
+
+-- 4. Product & Category Analysis
+-- 4.1 Sales by Category
+SELECT
+    dp.category,
+    SUM(fs.total_sales) AS revenue
+FROM fact_sales fs
+JOIN dim_product dp ON fs.product_key = dp.product_key
+GROUP BY dp.category
+ORDER BY revenue DESC;
+
+-- 4.2 Top-selling Products
+SELECT
+    dp.product_name,
+    dp.category,
+    SUM(fs.total_sales) AS sales
+FROM fact_sales fs
+JOIN dim_product dp ON fs.product_key = dp.product_key
+GROUP BY 1, 2
+ORDER BY sales DESC
+LIMIT 5;
+
+-- 4.3 Most Profitable Products
+SELECT
+    dp.product_name,
+    dp.category,
+    SUM(dsm.estimated_profit) AS profit
+FROM fact_sales fs
+JOIN dim_product dp ON fs.product_key = dp.product_key
+JOIN dim_sales_metrics dsm ON fs.metrics_key = dsm.metrics_key
+GROUP BY 1, 2
+ORDER BY profit
+LIMIT 5;
