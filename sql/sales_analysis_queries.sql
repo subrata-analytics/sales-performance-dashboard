@@ -1,4 +1,4 @@
--- Essential sales KPIs (High-level analysis)
+-- 1. Essential sales KPIs (High-level analysis)
 -- 1.1 Total Sales
 SELECT * FROM fact_sales;
 
@@ -23,3 +23,43 @@ SELECT
 FROM fact_sales fs
 JOIN dim_sales_metrics dsm ON fs.metrics_key = dsm.metrics_key;
 
+
+-- 2. Time-Series Analysis (Trend Charts)
+-- 2.1 Sales by Month
+SELECT
+    dd.sale_year,
+    dd.sale_month,
+    SUM(fs.total_sales) AS monthly_sales
+FROM fact_sales fs
+JOIN dim_date dd ON fs.date_key = dd.date_key
+GROUP BY 1, 2
+ORDER BY 1, 2;
+
+-- 2.2 Sales by Quarter
+SELECT
+    dd.sale_year,
+    dd.sale_quarter,
+    SUM(fs.total_sales) AS quaterly_sales
+FROM fact_sales fs
+JOIN dim_date dd ON fs.date_key = dd.date_key
+GROUP BY 1, 2
+ORDER BY 1, 2;
+
+-- 2.3 Weekday Performance
+SELECT
+    dd.weekday,
+    SUM(fs.total_sales) AS revenue
+FROM fact_sales fs
+JOIN dim_date dd ON fs.date_key = dd.date_key
+GROUP BY dd.weekday
+ORDER BY revenue DESC;
+
+-- 2.4 Yearly-Weekday Performance
+SELECT
+    dd.sale_year,
+    dd.weekday,
+    SUM(fs.total_sales) AS revenue
+FROM fact_sales fs
+JOIN dim_date dd ON fs.date_key = dd.date_key
+GROUP BY 1, 2
+ORDER BY 1, 3 DESC;
