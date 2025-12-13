@@ -63,3 +63,25 @@ FROM fact_sales fs
 JOIN dim_date dd ON fs.date_key = dd.date_key
 GROUP BY 1, 2
 ORDER BY 1, 3 DESC;
+
+
+-- 3 Store & Region Analysis
+-- 3.1 Sales by Region
+SELECT
+    ds.region,
+    SUM(fs.total_sales) AS revenue
+FROM fact_sales fs
+JOIN dim_store ds ON fs.store_key = ds.store_key
+GROUP BY ds.region
+ORDER BY revenue DESC;
+
+-- 3.2 Top Stores by Sales
+SELECT
+    ds.store_name,
+    ds.region,
+    SUM(fs.total_sales) AS store_sales
+FROM fact_sales fs
+JOIN dim_store ds ON fs.store_key = ds.store_key
+GROUP BY 1, 2
+ORDER BY store_sales DESC
+LIMIT 10;
