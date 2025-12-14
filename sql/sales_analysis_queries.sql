@@ -119,3 +119,27 @@ JOIN dim_sales_metrics dsm ON fs.metrics_key = dsm.metrics_key
 GROUP BY 1, 2 -- GROUP BY dp.product_name, dp.category
 ORDER BY profit
 LIMIT 5;
+
+
+-- 5. Price, Cost, and Profitability Analysis
+-- 5.1 Profit Margin by Category
+SELECT 
+    dp.category,
+    SUM(dsm.estimated_profit) / NULLIF(SUM(fs.total_sales), 0) AS profit_margin
+FROM fact_sales fs
+JOIN dim_product dp ON fs.product_key = dp.product_key
+JOIN dim_sales_metrics dsm ON fs.metrics_key = dsm.metrics_key
+GROUP BY dp.category
+ORDER BY profit_margin DESC;
+
+-- 5.2 Price Elasticity Indicator (basic)
+SELECT
+    dp.product_name,
+    dp.category,
+    AVG(dsm.unit_price) AS avg_price,
+    SUM(fs.quantity) AS total_units
+FROM fact_sales fs
+JOIN dim_product dp ON fs.product_key = dp.product_key
+JOIN dim_sales_metrics dsm ON fs.metrics_key = dsm.metrics_key
+GROUP BY dp.product_name, dp.category
+ORDER BY avg_price DESC;
