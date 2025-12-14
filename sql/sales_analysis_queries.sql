@@ -143,3 +143,23 @@ JOIN dim_product dp ON fs.product_key = dp.product_key
 JOIN dim_sales_metrics dsm ON fs.metrics_key = dsm.metrics_key
 GROUP BY dp.product_name, dp.category
 ORDER BY avg_price DESC;
+
+
+-- 6. Screening of Anomalies (Data quality, fraud, mispricing)
+-- 6.1 Zero-price or Zero-sale anomalies
+SELECT *  
+FROM fact_sales fs
+JOIN dim_sales_metrics dsm ON fs.metrics_key = dsm.metrics_key
+WHERE dsm.unit_price = 0 OR fs.total_sales = 0;
+
+-- 6.2 Negative profit items
+SELECT
+    dp.product_name,
+    ds.store_name,
+    dsm.estimated_profit
+FROM fact_sales as fs
+JOIN dim_product dp ON fs.product_key = dp.product_key
+JOIN dim_store ds ON fs.store_key = ds.store_key
+JOIN dim_sales_metrics dsm ON fs.metrics_key = dsm.metrics_key
+WHERE dsm.estimated_profit < 0;
+
