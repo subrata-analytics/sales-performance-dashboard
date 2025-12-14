@@ -163,3 +163,19 @@ JOIN dim_store ds ON fs.store_key = ds.store_key
 JOIN dim_sales_metrics dsm ON fs.metrics_key = dsm.metrics_key
 WHERE dsm.estimated_profit < 0;
 
+-- 7. Executive-level Insights
+-- 7.1 Monthly YoY Growth
+SELECT
+    dd.sale_month,
+    SUM(CASE WHEN dd.sale_year = 2023 THEN fs.total_sales END ) AS sales_2023,
+    SUM(CASE WHEN dd.sale_year = 2024 THEN fs.total_sales END ) AS sales_2024,
+    (
+    SUM(CASE WHEN dd.sale_year = 2023 THEN fs.total_sales END ) -
+    SUM(CASE WHEN dd.sale_year = 2024 THEN fs.total_sales END )
+    ) * 100.0 /
+    NULLIF(SUM(CASE WHEN dd.sale_year = 2023 THEN fs.total_sales END), 0) AS yoy_growth_pct
+FROM fact_sales fs
+JOIN dim_date dd ON fs.date_key = dd.date_key
+GROUP BY dd.sale_month
+ORDER BY dd.sale_month;
+
