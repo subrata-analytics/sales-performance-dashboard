@@ -29,6 +29,8 @@ SET weekday = TRIM(weekday);
 
 -- Insert default cost factors
 INSERT INTO product_margin (category, cost_factor) VALUES
+-- The arbitrary cost_factors can be replaced with real
+-- cost factors or the whole table can be generated from real data
     ('Electronics', 0.62),
     ('Accessories', 0.82),
     ('Other', 0.70)
