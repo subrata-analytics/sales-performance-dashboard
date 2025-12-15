@@ -1,4 +1,4 @@
-sale_date,store,region,product,category,unit_price,quantity,total_sales,year,month,quarter,weekday,estimated_profit,estimated_cost
+sale_date,store,region,product,category,unit_price,quantity,total_sales,sale_year,sale_month,sale_quarter,weekday,estimated_profit,estimated_cost
 2023-04-13,Store A,South,Tablet,Electronics,300,2,600,2023,4,2,Thursday,210.0,390.0
 2024-03-11,Store D,East,Laptop,Electronics,900,10,9000,2024,3,1,Monday,3150.0,5850.0
 2023-09-28,Store D,West,Headphones,Accessories,75,11,825,2023,9,3,Thursday,288.75,536.25
