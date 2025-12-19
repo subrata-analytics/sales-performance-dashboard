@@ -16,9 +16,7 @@ CREATE TABLE IF NOT EXISTS staging_sales (
     category             TEXT,
     unit_price           NUMERIC(12,2) NOT NULL CHECK (unit_price >= 0),
     quantity             INTEGER NOT NULL CHECK (quantity >= 0),
-    total_sales          NUMERIC(14,2) CHECK (total_sales >= 0),
-    estimated_cost       NUMERIC(14,2),
-    estimated_profit     NUMERIC(14,2)
+    total_sales          NUMERIC(14,2) CHECK (total_sales >= 0)
 );
 
 -- Add the new date-derived columns to the staging_sales
@@ -84,5 +82,5 @@ CREATE TABLE IF NOT EXISTS fact_sales (
 	metrics_key			INTEGER REFERENCES dim_sales_metrics(metrics_key),
 
 	quantity			INTEGER NOT NULL CHECK (quantity >= 0),
-	total_sales			NUMERIC(14,2), CHECK (total_sales >= 0)
+	total_sales			NUMERIC(14,2) CHECK (total_sales >= 0)
 );
