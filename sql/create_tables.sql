@@ -19,6 +19,11 @@ CREATE TABLE IF NOT EXISTS staging_sales (
     total_sales          NUMERIC(14,2) CHECK (total_sales >= 0)
 );
 
+-- Create staging_sales_raw based on staging_sales schema
+CREATE TABLE IF NOT EXISTS staging_sales_raw (
+	LIKE staging_sales INCLUDING ALL
+);
+
 -- Add the new date-derived columns to the staging_sales
 ALTER TABLE staging_sales
 ADD COLUMN sale_year		INTEGER,
