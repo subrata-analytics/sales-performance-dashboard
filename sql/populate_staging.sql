@@ -2,7 +2,7 @@
 -- Give the postgres user read access to 
 -- the file before running this command 
 -- Use absolute path of the CSV file if needed
-COPY staging_sales (
+COPY staging_sales_raw (
     sale_date,
     store,
     region,
@@ -12,7 +12,7 @@ COPY staging_sales (
     quantity,
     total_sales
 )
-FROM '../data/retail_sales_50krows_cleaned.csv'
+FROM '../data/retail_sales_50krows.csv'
 WITH (FORMAT csv, HEADER true, DELIMITER ',', ENCODING 'UTF8');
 
 -- Populate new-derived columns in staging_sales
@@ -47,4 +47,5 @@ FROM product_margin m
 WHERE s.category = m.category;
 
 
-SELECT * FROM staging_sales;
+SELECT COUNT(sale_date) AS total_count FROM staging_sales;
+-- pgsql> 50000
