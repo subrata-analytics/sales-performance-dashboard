@@ -16,7 +16,7 @@ FROM '../data/retail_sales_50krows.csv'
 WITH (FORMAT csv, HEADER true, DELIMITER ',', ENCODING 'UTF8');
 
 -- Populate new-derived columns in staging_sales
-UPDATE staging_sales
+UPDATE staging_sales_raw
 SET
 	sale_year 		= EXTRACT(YEAR FROM sale_date)::INTEGER,
 	sale_month 		= EXTRACT(MONTH FROM sale_date)::INTEGER,
@@ -24,7 +24,7 @@ SET
 	weekday 		= TO_CHAR(sale_date, 'Day'); -- e.g., 'Monday'
 
 -- Remove whitespaces from weekday
-UPDATE staging_sales
+UPDATE staging_sales_raw
 SET weekday = TRIM(weekday);
 
 -- Insert default cost factors
@@ -38,7 +38,7 @@ ON CONFLICT (category) DO NOTHING;
 
 -- Populate estimated_cost and estimated_profit 
 -- columns in table staging_sales
-UPDATE staging_sales s
+UPDATE staging_sales_raw s
 SET estimated_cost = 
 		s.total_sales * m.cost_factor,
 	estimated_profit = 
@@ -47,5 +47,5 @@ FROM product_margin m
 WHERE s.category = m.category;
 
 
-SELECT COUNT(sale_date) AS total_count FROM staging_sales;
+SELECT COUNT(sale_date) AS total_count FROM staging_sales_raw;
 -- pgsql> 50000
