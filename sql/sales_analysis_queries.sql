@@ -2,8 +2,8 @@
 -- 1.1 Total Sales
 SELECT * FROM fact_sales;
 
-SELECT 
-    SUM(total_sales) AS total_revenue
+SELECT
+    SUM(total_sales) AS total_sales
 FROM fact_sales;
 
 -- 1.2 Total Quantity Sold
@@ -18,10 +18,20 @@ FROM fact_sales;
 
 -- 1.4 Profitability
 SELECT
-    SUM(dsm.estimated_profit) AS total_profit,
-    SUM(dsm.estimated_cost) AS total_cost
+    dp.category,
+    SUM(total_sales) AS total_sales,
+	SUM(estimated_cost) AS total_cost,
+	SUM(estimated_profit) AS total_profit
 FROM fact_sales fs
-JOIN dim_sales_metrics dsm ON fs.metrics_key = dsm.metrics_key;
+JOIN dim_product dp ON fs.product_key = dp.product_key
+GROUP BY 1
+ORDER BY 1;
+
+SELECT
+    SUM(estimated_profit) AS total_profit,
+    SUM(estimated_cost) AS total_cost
+FROM fact_sales;
+
 
 
 -- 2. Time-Series Analysis (Trend Charts)
@@ -112,10 +122,9 @@ LIMIT 5;
 SELECT
     dp.product_name,
     dp.category,
-    SUM(dsm.estimated_profit) AS profit
+    SUM(estimated_profit) AS profit
 FROM fact_sales fs
 JOIN dim_product dp ON fs.product_key = dp.product_key
-JOIN dim_sales_metrics dsm ON fs.metrics_key = dsm.metrics_key
 GROUP BY 1, 2 -- GROUP BY dp.product_name, dp.category
 ORDER BY profit
 LIMIT 5;
@@ -125,10 +134,9 @@ LIMIT 5;
 -- 5.1 Profit Margin by Category
 SELECT 
     dp.category,
-    SUM(dsm.estimated_profit) / NULLIF(SUM(fs.total_sales), 0) AS profit_margin
+    SUM(estimated_profit) / NULLIF(SUM(fs.total_sales), 0) AS profit_margin
 FROM fact_sales fs
 JOIN dim_product dp ON fs.product_key = dp.product_key
-JOIN dim_sales_metrics dsm ON fs.metrics_key = dsm.metrics_key
 GROUP BY dp.category
 ORDER BY profit_margin DESC;
 
@@ -136,11 +144,10 @@ ORDER BY profit_margin DESC;
 SELECT
     dp.product_name,
     dp.category,
-    AVG(dsm.unit_price) AS avg_price,
+    AVG(fs.unit_price) AS avg_price,
     SUM(fs.quantity) AS total_units
 FROM fact_sales fs
 JOIN dim_product dp ON fs.product_key = dp.product_key
-JOIN dim_sales_metrics dsm ON fs.metrics_key = dsm.metrics_key
 GROUP BY dp.product_name, dp.category
 ORDER BY avg_price DESC;
 
@@ -149,19 +156,17 @@ ORDER BY avg_price DESC;
 -- 6.1 Zero-price or Zero-sale anomalies
 SELECT *  
 FROM fact_sales fs
-JOIN dim_sales_metrics dsm ON fs.metrics_key = dsm.metrics_key
-WHERE dsm.unit_price = 0 OR fs.total_sales = 0;
+WHERE fs.unit_price = 0 OR fs.total_sales = 0;
 
 -- 6.2 Negative profit items
 SELECT
     dp.product_name,
     ds.store_name,
-    dsm.estimated_profit
+    fs.estimated_profit
 FROM fact_sales as fs
 JOIN dim_product dp ON fs.product_key = dp.product_key
 JOIN dim_store ds ON fs.store_key = ds.store_key
-JOIN dim_sales_metrics dsm ON fs.metrics_key = dsm.metrics_key
-WHERE dsm.estimated_profit < 0;
+WHERE fs.estimated_profit < 0;
 
 -- 7. Executive-level Insights
 -- 7.1 Monthly YoY Growth
