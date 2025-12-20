@@ -1,14 +1,22 @@
 -- Populate Dimension Tables (Based on staging table)
 -- Populate dim_date
-INSERT INTO dim_date (sale_date, sale_year, sale_month, sale_quarter, weekday)
+INSERT INTO dim_date (sale_date)
 SELECT DISTINCT
-	sale_date,
-	sale_year,
-	sale_month,
-	sale_quarter,
-	weekday
+	sale_date
 FROM staging_sales
 ON CONFLICT (sale_date) DO NOTHING;
+
+UPDATE dim_date
+SET
+    sale_year    = EXTRACT(YEAR    FROM sale_date)::INTEGER,
+    sale_month   = EXTRACT(MONTH   FROM sale_date)::INTEGER,
+    sale_quarter = EXTRACT(QUARTER FROM sale_date)::INTEGER,
+    weekday      = TRIM(TO_CHAR(sale_date, 'Day')); -- e.g., 'Monday'
+
+-- Remove whitespaces from weekday
+UPDATE dim_date 
+SET 
+	weekday = TRIM(weekday);
 
 -- Populate dim_store
 INSERT INTO dim_store (store_name, region)
@@ -26,16 +34,7 @@ SELECT DISTINCT
 FROM staging_sales
 ON CONFLICT (product_name, category) DO NOTHING;
 
--- Populate dim_sales_metrics
-INSERT INTO dim_sales_metrics (unit_price, estimated_cost, estimated_profit)
-SELECT DISTINCT
-	unit_price,
-	estimated_cost,
-	estimated_profit
-FROM staging_sales
-ON CONFLICT DO NOTHING;
 
 SELECT * FROM dim_date;
 SELECT * FROM dim_store;
 SELECT * FROM dim_product;
-SELECT * FROM dim_sales_metrics;
