@@ -1,13 +1,13 @@
 -- Run each block of this script separately to avoid errors
 -- Drop tables safely
-DROP TABLE IF EXISTS staging_sales;
-DROP TABLE IF EXISTS staging_sales_raw;
-DROP TABLE IF EXISTS staging_sales_raw_clean;
-DROP TABLE IF EXISTS product_margin;
+DROP TABLE IF EXISTS fact_sales;
 DROP TABLE IF EXISTS dim_date;
 DROP TABLE IF EXISTS dim_store;
 DROP TABLE IF EXISTS dim_product;
-DROP TABLE IF EXISTS fact_sales;
+DROP TABLE IF EXISTS product_margin;
+DROP TABLE IF EXISTS staging_sales;
+DROP TABLE IF EXISTS staging_sales_raw;
+DROP TABLE IF EXISTS staging_sales_raw_clean;
 
 -- Create staging table safely
 CREATE TABLE IF NOT EXISTS staging_sales (
