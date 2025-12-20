@@ -13,11 +13,6 @@ SET
     sale_quarter = EXTRACT(QUARTER FROM sale_date)::INTEGER,
     weekday      = TRIM(TO_CHAR(sale_date, 'Day')); -- e.g., 'Monday'
 
--- Remove whitespaces from weekday
-UPDATE dim_date 
-SET 
-	weekday = TRIM(weekday);
-
 -- Populate dim_store
 INSERT INTO dim_store (store_name, region)
 SELECT DISTINCT
