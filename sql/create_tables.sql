@@ -1,6 +1,8 @@
 -- Run each block of this script separately to avoid errors
 -- Drop tables safely
 DROP TABLE IF EXISTS staging_sales;
+DROP TABLE IF EXISTS staging_sales_raw;
+DROP TABLE IF EXISTS staging_sales_raw_clean;
 DROP TABLE IF EXISTS product_margin;
 DROP TABLE IF EXISTS dim_date;
 DROP TABLE IF EXISTS dim_store;
@@ -23,13 +25,6 @@ CREATE TABLE IF NOT EXISTS staging_sales (
 CREATE TABLE IF NOT EXISTS staging_sales_raw (
 	LIKE staging_sales INCLUDING ALL
 );
-
--- Add the new date-derived columns to the staging_sales
-ALTER TABLE staging_sales
-ADD COLUMN sale_year		INTEGER,
-ADD COLUMN sale_month		INTEGER,
-ADD COLUMN sale_quarter		INTEGER,
-ADD COLUMN weekday			TEXT;
 
 -- Create a cost factor table
 CREATE TABLE IF NOT EXISTS product_margin (
@@ -67,14 +62,6 @@ CREATE TABLE IF NOT EXISTS dim_product (
 	UNIQUE (product_name, category)
 );
 
--- dim_sales_metrics: Usable numeric attributes for modeling
-CREATE TABLE IF NOT EXISTS dim_sales_metrics (
-	metrics_key			SERIAL PRIMARY KEY,
-	unit_price			NUMERIC(12,2) CHECK (unit_price >= 0),
-	estimated_cost		NUMERIC (14,2),
-	estimated_profit	NUMERIC (14,2)
-);
-
 -- The fact table references all dimensions and stores 
 -- the transaction-level measures.
 -- fact_sales: It references all dimensions and transactions
@@ -87,5 +74,8 @@ CREATE TABLE IF NOT EXISTS fact_sales (
 	metrics_key			INTEGER REFERENCES dim_sales_metrics(metrics_key),
 
 	quantity			INTEGER NOT NULL CHECK (quantity >= 0),
-	total_sales			NUMERIC(14,2) CHECK (total_sales >= 0)
+	unit_price			NUMERIC(12,2) CHECK (unit_price >= 0),
+	total_sales			NUMERIC(14,2) CHECK (total_sales >= 0),
+	estimated_cost		NUMERIC (14,2),
+	estimated_profit	NUMERIC (14,2)
 );
