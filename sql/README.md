@@ -29,8 +29,12 @@ for the Sales Performance Dashboard project.
 
 ## Execution Order
 1. Run create_tables.sql
-2. Run cleaning_queries.sql
-3. Run sales_analysis_queries.sql
+2. Run populate_staging.sql
+3. Run populate_margin.sql
+4. Run cleaning_queries.sql
+5. Run populate_dimensions.sql
+6. Run populate_fact.sql
+7. Run sales_analysis_queries.sql
 
 ## Recommended Database Engines
 - DuckDB (fastest for local analytics)
