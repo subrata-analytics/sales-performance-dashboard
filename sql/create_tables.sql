@@ -71,7 +71,6 @@ CREATE TABLE IF NOT EXISTS fact_sales (
 	date_key			INTEGER REFERENCES dim_date(date_key),
 	store_key			INTEGER REFERENCES dim_store(store_key),
 	product_key			INTEGER REFERENCES dim_product(product_key),
-	metrics_key			INTEGER REFERENCES dim_sales_metrics(metrics_key),
 
 	quantity			INTEGER NOT NULL CHECK (quantity >= 0),
 	unit_price			NUMERIC(12,2) CHECK (unit_price >= 0),
