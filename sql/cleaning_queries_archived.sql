@@ -51,9 +51,9 @@ WHERE
 
 UPDATE staging_sales_raw_clean
 SET
-    unit_price = NULLIF(unit_price, 'NaN')::NUMERIC,
-    quantity   = NULLIF(quantity, 'NaN')::INTEGER,
-    total_sales = NULLIF(total_sales, 'NaN')::NUMERIC;
+    unit_price = NULLIF(unit_price::TEXT, 'NaN')::NUMERIC,
+    quantity   = NULLIF(quantity::TEXT, 'NaN')::INTEGER,
+    total_sales = NULLIF(total_sales::TEXT, 'NaN')::NUMERIC;
 
 
 ------------------------------------------------------------
@@ -114,37 +114,6 @@ WHERE s.category = i.category;
 
 
 ------------------------------------------------------------
--- 9. Add engineered columns (year, month, quarter, weekday)
-------------------------------------------------------------
-
-ALTER TABLE staging_sales_raw_clean
-    ADD COLUMN sale_year    INTEGER,
-    ADD COLUMN sale_month   INTEGER,
-    ADD COLUMN sale_quarter INTEGER,
-    ADD COLUMN weekday      TEXT;
-
-UPDATE staging_sales_raw_clean
-SET
-    sale_year    = EXTRACT(YEAR    FROM sale_date)::INTEGER,
-    sale_month   = EXTRACT(MONTH   FROM sale_date)::INTEGER,
-    sale_quarter = EXTRACT(QUARTER FROM sale_date)::INTEGER,
-    weekday      = TRIM(TO_CHAR(sale_date, 'Day'));
-
-
-------------------------------------------------------------
--- 10. Compute estimated_cost and estimated_profit
--- using margin table: product_margin(category, cost_factor)
-------------------------------------------------------------
-
-UPDATE staging_sales_raw_clean s
-SET 
-    estimated_cost   = s.unit_price * s.quantity * pm.cost_factor,
-    estimated_profit = s.total_sales - (s.unit_price * s.quantity * pm.cost_factor)
-FROM product_margin pm
-WHERE s.category = pm.category;
-
-
-------------------------------------------------------------
 -- 11. Load cleaned data into final staging table
 ------------------------------------------------------------
 
@@ -152,15 +121,11 @@ TRUNCATE staging_sales;
 
 INSERT INTO staging_sales (
     sale_date, store, region, product, category,
-    unit_price, quantity, total_sales,
-    estimated_cost, estimated_profit,
-    sale_year, sale_month, sale_quarter, weekday
+    unit_price, quantity, total_sales
 )
 SELECT 
     sale_date, store, region, product, category,
-    unit_price, quantity, total_sales,
-    estimated_cost, estimated_profit,
-    sale_year, sale_month, sale_quarter, weekday
+    unit_price, quantity, total_sales
 FROM staging_sales_raw_clean;
 
 ------------------------------------------------------------
