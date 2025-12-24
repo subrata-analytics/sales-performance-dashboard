@@ -27,3 +27,16 @@ Produce actionable business insights.
 | BI Tools | Power BI, Tableau, Looker Studio |
 | Data Prep | Excel / CSV |
 | Other | GitHub versioning |
+
+## Dashboards
+### Retail Sales Performance in Power BI
+![Power BI Dashboard](./dashboards/powerbi.png "Retail Sales Performance in Power BI")
+
+### Retail Sales Performance in Tableau
+![Tableau Dashboard](# "Retail Sales Performance in Tableau will created")
+
+### Retail Sales Performance in IBM Cognos Analytics
+![Cognos Analytics Dashboard](# "Retail Sales Performance in IBM Cognos Analytics will be created")
+
+### Retail Sales Performance in Google Looker Studio
+![Looker Studio Dashboard](# "Retail Sales Performance in Google Looker Studio will be created")
