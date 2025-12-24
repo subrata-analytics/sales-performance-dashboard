@@ -128,6 +128,30 @@ SELECT
     unit_price, quantity, total_sales
 FROM staging_sales_raw_clean;
 
+
+-- Export an Analysis-ready CSV file from PostgreSQL
+-- Generate a table combining all the required columns
+-- from different tables: fact_sales and dimensions
+SELECT
+    dd.sale_date,
+    dd.sale_year,
+    dd.sale_month,
+    dd.sale_quarter,
+    dd.weekday,
+    dp.product_name,
+    dp.category,
+    ds.store_name,
+    ds.region,
+    fs.quantity,
+    fs.unit_price,
+    fs.total_sales,
+    fs.estimated_profit
+FROM fact_sales fs
+JOIN dim_date dd ON fs.date_key = dd.date_key
+JOIN dim_product dp ON fs.product_key = dp.product_key
+JOIN dim_store ds ON fs.store_key = ds.store_key;
+
+
 ------------------------------------------------------------
 -- End of SQL Cleaning Pipeline
 ------------------------------------------------------------
