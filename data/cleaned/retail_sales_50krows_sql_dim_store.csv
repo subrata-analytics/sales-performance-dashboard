@@ -1,0 +1,21 @@
+store_key,store_name,region
+1,Store A,North
+2,Store D,North
+3,Store A,South
+4,Store D,East
+5,Store E,East
+6,Store B,West
+7,Store C,South
+8,Store E,South
+9,Store D,West
+10,Store C,East
+11,Store A,West
+12,Store D,South
+13,Store B,North
+14,Store E,West
+15,Store C,North
+16,Store A,East
+17,Store B,South
+18,Store E,North
+19,Store B,East
+20,Store C,West
