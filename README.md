@@ -33,7 +33,7 @@ Produce actionable business insights.
 ![Power BI Dashboard](./dashboards/powerbi.png "Retail Sales Performance in Power BI")
 
 ### Retail Sales Performance in Tableau
-![Tableau Dashboard](# "Retail Sales Performance in Tableau will created")
+![Tableau Dashboard](./dashboards/tableau.png "Retail Sales Performance in Tableau")
 
 ### Retail Sales Performance in IBM Cognos Analytics
 ![Cognos Analytics Dashboard](# "Retail Sales Performance in IBM Cognos Analytics will be created")
