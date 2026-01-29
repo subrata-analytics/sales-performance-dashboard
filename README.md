@@ -1,6 +1,6 @@
 ## 📌 Sales Performance Dashboard — End-to-End BI Project
 
-An interactive business intelligence project analyzing sales trends, product performance, customer behavior, and regional insights using SQL, Python, Power BI, Tableau, and Looker Studio.
+An interactive business intelligence project analyzing sales trends, product performance, customer behavior, and regional insights using SQL, Python, Power BI, and Tableau.
 
 ### 📘 Overview
 
